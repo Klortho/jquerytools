@@ -66,22 +66,59 @@
 		
 		conf = $.extend({x: true, y: true, drag: true}, conf);
 	
-		doc = doc || $(document).bind("mousedown mouseup touchstart touchend", function(e) {
-				
+	    var eventlist = 
+            typeof Modernizer == "undefined"
+                ? "touchstart touchend mousedown mouseup" 
+                : Modernizr.touch ? "touchstart touchend" : "mousedown mouseup";
+		doc = doc || $(document).bind(eventlist, function(e) {
+            //dcon.head(e.type);
 			var el = $(e.target);  
 			
-			// start 
-			if ((e.type == "mousedown" || e.type == "touchstart") && el.data("drag")) {
+			// Only consider events of the right type, and, in the case of touch events,
+            // only those when the user has just one finger touching the device.
+			if ( ( e.type == "mousedown" || 
+                   e.type == "touchstart" && e.originalEvent.touches.length == 1 ) && 
+                 el.data("drag") ) 
+            {
 				// touchstart/touchmove use e.orginalEvent.pageX/Y instead of e.pageX/Y
-				var offset = el.position(),
-					 x0 = (e.pageX || e.originalEvent.pageX) - offset.left, 
-					 y0 = (e.pageY || e.originalEvent.pageY) - offset.top,
-					 start = true;    
+				var offset = el.position();
+                //dcon.info("offset.left = " + offset.left + ", offset.top = " + offset.top);
+                var x0, y0;
+                if (e.type == "mousedown") {
+                    //dcon.info("e.pageX = " + e.pageX + ", e.originalEvent.pageX = " + e.pageX);
+                    x0 = (e.pageX || e.originalEvent.pageX) - offset.left, 
+					y0 = (e.pageY || e.originalEvent.pageY) - offset.top;
+                }
+                else {  // touchstart
+                    //dcon.info("..screenX = " + e.originalEvent.touches[0].screenX);
+                    x0 = e.originalEvent.touches[0].screenX - offset.left;
+                    y0 = e.originalEvent.touches[0].screenY - offset.top;
+                }
+                //dcon.info("x0 = " + x0 + ", y0 = " + y0);
 
-				doc.bind("mousemove.drag touchmove.drag", function(e) {
-					var x = (e.pageX || e.originalEvent.pageX) -x0, 
-						 y = (e.pageY || e.originalEvent.pageY) -y0,
-						 props = {};
+				var start = true;    
+
+        	    var eventlist = 
+                    typeof Modernizer == "undefined"
+                        ? "touchmove.drag mousemove.drag" 
+                        : Modernizr.touch ? "touchmove.drag" : "mousemove.drag";
+				doc.bind(eventlist, function(e) {
+                    //dcon.head(e.type);
+                    
+                    var x, y;
+                    if (e.type == "mousemove") {
+                        //dcon.info("e.pageX = " + e.pageX + ", e.originalEvent.pageX = " + e.pageX);
+                        x = (e.pageX || e.originalEvent.pageX) - x0, 
+    					y = (e.pageY || e.originalEvent.pageY) - y0;
+                    }
+                    else {  // touchstart
+                        //dcon.info("..screenX = " + e.originalEvent.touches[0].screenX);
+                        x = e.originalEvent.touches[0].screenX - x0;
+                        y = e.originalEvent.touches[0].screenY - y0;
+                    }
+                    //dcon.info("x = " + x + ", y = " + y);
+                    
+                    var props = {};
 					
 					if (conf.x) { props.left = x; }
 					if (conf.y) { props.top = y; } 
@@ -95,6 +132,7 @@
 					draggable = el;
 				}); 
 				
+				//dcon.info("Setting preventDefault()");
 				e.preventDefault();
 				
 			} else {

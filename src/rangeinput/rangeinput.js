@@ -1,4 +1,10 @@
 /**
+ * jquerytools rangeinput widget.
+ *
+ * This version of this file is from https://github.com/Klortho/jquerytools, forked from
+ * https://github.com/Patrick64/jquerytools, which was forked from 
+ * https://github.com/jquerytools/jquerytools.
+ *
  * @license 
  * jQuery Tools @VERSION Rangeinput - HTML5 <input type="range" /> for humans
  * 

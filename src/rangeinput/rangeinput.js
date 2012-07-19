@@ -301,7 +301,12 @@
 				}				
 				
 			} else {
-				handle.animate({left: x}, speed, callback);
+                // Android is very sluggish.  We don't want or need animation here,
+                // so just set the css property directly.  Unfortunately, it's still 
+                // sluggish.  Might need to play with the CSS3 transform property, which is
+                // supposed to be very fast.
+				//handle.animate({left: x}, speed, callback);
+                handle.css('left', x);
 				if (conf.progress) { 
 					progress.animate({width: x + handle.width() / 2}, speed); 
 				}

@@ -1,12 +1,11 @@
-[jQuery Tools](http://flowplayer.org/tools/) - The Missing UI library for the Web
+Klortho fork of [jQuery Tools](http://flowplayer.org/tools/) - The Missing UI library for the Web
 ================================
 
-jQuery Tools is a collection of the most important user-interface components for modern websites. Used by large sites all over the world.
+This repo is forked form [Patrick64/jquerytools](https://github.com/Patrick64/jquerytools),
+who forked from [jquerytools/jquerytools](https://github.com/jquerytools/jquerytools).
+Patrick64 added support for touch devices to the rangeinput component.  I tweaked
+that to make it work better on the Android browser, and also added two new API methods:
 
-##Contributing
-
-Please issue pull requests to the [dev branch](https://github.com/jquerytools/jquerytools/tree/dev).  
-
-This is where active development takes place, we then merge changes into master for releases. That will become v1.2.6. 
-Most of the development goes to 2.0 which is currently a private repository.
-
+* setMax(max) - set a new maximum value, dynamically updating the handle position
+* setRange(min, max, val) - change any combination of min, max, or value.  If any
+  of these arguments is *undefined*, then that value will not be changed.

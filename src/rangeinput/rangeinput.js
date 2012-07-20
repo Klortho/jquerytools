@@ -21,6 +21,7 @@
 
     var tool;
 
+    // The default configuration for new rangeinputs
     tool = $.tools.rangeinput = {
 
         conf: {
@@ -37,12 +38,11 @@
 
             // set to null if not needed
             css: {
-                input:      'range',
-                slider:         'slider',
-                progress:   'progress',
-                handle:         'handle'
+                input:    'range',
+                slider:   'slider',
+                progress: 'progress',
+                handle:   'handle'
             }
-
         }
     };
 
@@ -338,6 +338,20 @@
             setValue: function(val, e) {
                 init();
                 return slide(e || $.Event("api"), undefined, val, true);
+            },
+
+            setMax: function(val) {
+                //console.info("Setting max to " + val);
+                conf.max = val;
+                range = conf.max - conf.min;
+                return self.setValue(value);
+            },
+
+            setRange: function(min, max, val) {
+                if (typeof min !== "undefined") { conf.min = min; }
+                if (typeof max !== "undefined") { conf.max = max; }
+                range = conf.max - conf.min;
+                return self.setValue(typeof val !== "undefined" ? val : value);
             },
 
             getConf: function() {

@@ -230,7 +230,8 @@
 
         input.addClass(css.input);
 
-        var fire = $(self).add(input), fireOnSlide = true;
+        var fire = $(self).add(input);
+        var fireOnSlide = true;
 
 
         /**
@@ -284,6 +285,7 @@
 
             // precision
             val = round(val, precision);
+            if (val == value) { return self; }
 
             // onSlide
             var isClick = evt.type == "click";
@@ -293,12 +295,16 @@
                 if (evt.isDefaultPrevented()) { return self; }
             }
 
-            // speed & callback
-            var speed = isClick ? conf.speed : 0,
-                 callback = isClick ? function()  {
-                    evt.type = "change";
-                    fire.trigger(evt, [val]);
-                 } : null;
+            // Speed of animation (really duration):  if it was a click, use the configured value;
+            // if it's a drag, then use zero (instant).
+            var speed = isClick ? conf.speed : 0;
+
+            // Function called at the end of the animation will fire a change event.
+            var callback = function()  {
+                console.info("rangeinput:  firing a rangeinput change event.");
+                evt.type = "change";
+                fire.trigger(evt, [val]);
+             };
 
             if (vertical) {
                 handle.animate({top: x}, speed, callback);
@@ -307,12 +313,14 @@
                 }
 
             } else {
-                // Android is very sluggish.  We don't want or need animation here,
-                // so just set the css property directly.  Unfortunately, it's still
-                // sluggish.  Might need to play with the CSS3 transform property, which is
-                // supposed to be very fast.
-                //handle.animate({left: x}, speed, callback);
-                handle.css('left', x);
+                // Android is very sluggish.  We don't want or need animation here when we
+                // are dragging the handle, but since the duration is set to zero when we're
+                // dragging, I don't think it makes any difference.  Note that it might be
+                // improved now that we only get to this point when the value has changed by
+                // a discrete step (used to be called with every touchmove event, even when the
+                // value didn't change.)
+                handle.animate({left: x}, speed, callback);
+                //handle.css('left', x);
                 if (conf.progress) {
                     progress.animate({width: x + handle.width() / 2}, speed);
                 }

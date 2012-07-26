@@ -17,6 +17,31 @@
  */
 (function($) {
 
+  /* Test console.  This waits ten seconds, and then pops up an alert box.
+
+    dcon = (function() {
+        var starttime = (new Date()).getTime();
+        var text = "Console, start:  " + starttime + ".\n";
+
+        var info = function(msg) {
+            var t = (new Date()).getTime() - starttime;
+            text += t + ": " + msg + "\n";
+        };
+        var display = function() {
+            alert(text);
+        };
+
+        window.setTimeout(display, 10000);
+
+        return {
+            starttime: starttime,
+            info: info,
+            display: display
+        };
+    })();
+  */
+
+
     $.tools = $.tools || {version: '@VERSION'};
 
     var tool;
@@ -76,6 +101,7 @@
             typeof Modernizer == "undefined"
                 ? "touchstart touchend mousedown mouseup"
                 : Modernizr.touch ? "touchstart touchend" : "mousedown mouseup";
+        //dcon.info("Binding to events " + eventlist);
         doc = doc || $(document).bind(eventlist, function(e) {
             //dcon.head(e.type);
             var el = $(e.target);
@@ -100,7 +126,7 @@
                     x0 = e.originalEvent.touches[0].screenX - offset.left;
                     y0 = e.originalEvent.touches[0].screenY - offset.top;
                 }
-                //dcon.info("x0 = " + x0 + ", y0 = " + y0);
+                //dcon.info("event " + e.type + ", x0 = " + x0);
 
                 var start = true;
 
@@ -108,6 +134,7 @@
                     typeof Modernizer == "undefined"
                         ? "touchmove.drag mousemove.drag"
                         : Modernizr.touch ? "touchmove.drag" : "mousemove.drag";
+                //dcon.info("Binding to events " + eventlist);
                 doc.bind(eventlist, function(e) {
                     //dcon.head(e.type);
 
@@ -122,7 +149,7 @@
                         x = e.originalEvent.touches[0].screenX - x0;
                         y = e.originalEvent.touches[0].screenY - y0;
                     }
-                    //dcon.info("x = " + x + ", y = " + y);
+                    //dcon.info("event " + e.type + ", x = " + x);
 
                     var props = {};
 
@@ -148,6 +175,7 @@
                         draggable.trigger("dragEnd");
                     }
                 } finally {
+                    //dcon.info("Unbinding from events mousemove.drag touchmove.drag");
                     doc.unbind("mousemove.drag touchmove.drag");
                     draggable = null;
                 }
@@ -313,14 +341,7 @@
                 }
 
             } else {
-                // Android is very sluggish.  We don't want or need animation here when we
-                // are dragging the handle, but since the duration is set to zero when we're
-                // dragging, I don't think it makes any difference.  Note that it might be
-                // improved now that we only get to this point when the value has changed by
-                // a discrete step (used to be called with every touchmove event, even when the
-                // value didn't change.)
                 handle.animate({left: x}, speed, callback);
-                //handle.css('left', x);
                 if (conf.progress) {
                     progress.animate({width: x + handle.width() / 2}, speed);
                 }

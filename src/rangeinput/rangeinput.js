@@ -329,7 +329,7 @@
 
             // Function called at the end of the animation will fire a change event.
             var callback = function()  {
-                console.info("rangeinput:  firing a rangeinput change event.");
+                //console.info("rangeinput:  firing a rangeinput change event.");
                 evt.type = "change";
                 fire.trigger(evt, [val]);
              };

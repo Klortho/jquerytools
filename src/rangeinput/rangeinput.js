@@ -522,7 +522,7 @@
 
         function begin() {
             init();
-            self.setValue(conf.value !== undefined ? conf.value : conf.min);
+            //self.setValue(conf.value !== undefined ? conf.value : conf.min);
         }
         begin();
 
